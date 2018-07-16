@@ -1,0 +1,142 @@
+// A brainfuck-like tape reader.
+// Inputs are read from the keyboard and then mapped to commands.
+// 1 : Move left
+// 2 : Move right 
+// 3 : Increment cell 
+// 4 : Decrement cell 
+// 5 : Store next key into cell 
+// 6 : Print cell value (0 - F)
+
+
+CLS //512, 0x200
+MAIN_LOOP: //514, 0x202
+    LD V0, K 
+    SNE V0, 0x1
+        CALL LEFT 
+    SNE V0, 0x2
+        CALL RIGHT 
+    SNE V0, 0x3
+        CALL INC 
+    SNE V0, 0x4
+        CALL DEC 
+    SNE V0, 0x5
+        CALL WRITE
+    SNE V0, 0x6 
+        CALL READ 
+JP MAIN_LOOP
+
+
+LEFT:
+    LD V0, 0x1
+    SUB VA, V0 
+    SE VF, 0x1
+        JP ERR
+    LD I, 0x200
+    ADD I, VA
+    LD V0, [I] 
+    LD VB, V0 
+    RET
+
+RIGHT:
+    LD V0, 0x1
+    ADD VA, V0 
+    SE VF, 0x0
+        JP ERR
+    LD I, 0x200
+    ADD I, VA
+    LD V0, [I] 
+    LD VB, V0 
+    RET
+
+DEC:
+    LD V0, 0x1
+    SUB VB, V0
+    SE VF, 0x1
+        JP ERR
+    LD V0, VB
+    LD I, 0x200
+    ADD I, VA
+    LD [I], V0
+    RET
+
+INC:
+    LD V0, 0x1
+    ADD VB, V0
+    SE VF, 0x0
+        JP ERR
+    LD V0, VB
+    LD I, 0x200
+    ADD I, VA
+    LD [I], V0
+    RET
+
+WRITE:
+    LD V0, K 
+    LD VB, V0 
+    LD I, 0x200
+    ADD I, VA
+    LD [I], V0
+    RET
+
+READ: 
+    // Back up the memory
+    LD V2, [I]
+    LD V3, V0 
+    LD V4, V1 
+    LD V5, V2 
+
+    // Get the digits
+    LD B, VB 
+    LD V2, [I]
+    LD V6, V0
+    LD V7, V1 
+    LD V8, V2
+
+    //Restore the memory 
+    LD V0, V3 
+    LD V1, V4
+    LD V2, V5 
+    LD [I], V2 
+
+    //Display the digits 
+    LD V0, 0x08 
+    LD V1, 0x08 
+    LD F, V6 
+    DRW V0, V1, 0x5 
+    ADD V0, 0x8 
+    LD F, V7 
+    DRW V0, V1, 0x5 
+    ADD V0, 0x8 
+    LD F, V8
+    DRW V0, V1, 0x5 
+
+    RET
+
+//On errror fill the screen with E.
+ERR:
+    //Clear the screen
+    CLS
+
+    //Point at E
+    LD V0, 0xE
+    LD F, V0
+
+    //Loop counters
+    LD V0, 0x0
+    LD V1, 0x0
+    LD V2, 0x8 // Subtract 8 from V2 so we loop back on the first loop iteration
+    SUB V1, V2
+
+    //Draw the E every 8 pixels in both directions
+    OUTER_ERROR_LOOP:
+        LD V0, 0x0
+        ADD V1, 0x8
+        INNER_ERROR_LOOP:
+            DRW V0, V1, 0x5
+            ADD V0, 0x8
+        SE V0, 0x40
+        JP INNER_ERROR_LOOP
+    SE V1, 0x20
+    JP OUTER_ERROR_LOOP
+JP ERR
+
