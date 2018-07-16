@@ -8,26 +8,26 @@
 // 6 : Print cell value (0 - F)
 
 
-CLS //512, 0x200
-MAIN_LOOP: //514, 0x202
-    LD V0, K 
-    SNE V0, 0x1
-        CALL LEFT 
-    SNE V0, 0x2
+CLS //0x00E0 
+MAIN_LOOP: 
+    LD V0, K //0xF00A
+    SNE V0, 0x1 //0x4001
+        CALL LEFT //0x221E
+    SNE V0, 0x2 //0x4002
         CALL RIGHT 
-    SNE V0, 0x3
+    SNE V0, 0x3 //0x4003
         CALL INC 
-    SNE V0, 0x4
+    SNE V0, 0x4 //0x4004
         CALL DEC 
-    SNE V0, 0x5
+    SNE V0, 0x5 //0x4005
         CALL WRITE
-    SNE V0, 0x6 
+    SNE V0, 0x6 //0x4006
         CALL READ 
-JP MAIN_LOOP
+JP MAIN_LOOP //0x1202
 
 
 LEFT:
-    LD V0, 0x1
+    LD V0, 0x1 
     SUB VA, V0 
     SE VF, 0x1
         JP ERR
@@ -137,6 +137,8 @@ ERR:
         SE V0, 0x40
         JP INNER_ERROR_LOOP
     SE V1, 0x20
+    LD V3, K
+    JP 0x000
     JP OUTER_ERROR_LOOP
 JP ERR
 
