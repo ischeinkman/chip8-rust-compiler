@@ -29,7 +29,7 @@ macro_rules! parse_args {
     }};
     ($ln:ident, 3) => {{
         let mut without_comment = $ln.splitn(2, "//").next().unwrap_or("").trim();
-        let mut instruction_itr =  without_comment.splitn(2, ",");
+        let mut instruction_itr =  without_comment.splitn(3, ",");
 
         let parsed_arg1 = parse_arg!(instruction_itr); 
         let parsed_arg2 = parse_arg!(instruction_itr);

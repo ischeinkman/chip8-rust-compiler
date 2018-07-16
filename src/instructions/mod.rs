@@ -175,7 +175,7 @@ pub fn parse_labels(file: &str) -> HashMap<OpParam, OpParam> {
             offset += 2;
         } else if is_label(ln) {
             let comment_parsed = ln.splitn(2, "//").next().unwrap();
-            let nlabel = OpParam::Label(comment_parsed.to_owned());
+            let nlabel = OpParam::Label(comment_parsed.replace(":", " ").trim().to_owned());
             let nvariable = OpParam::Variable(offset);
             map.insert(nlabel, nvariable);
         }

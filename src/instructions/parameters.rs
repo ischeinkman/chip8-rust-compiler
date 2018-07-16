@@ -36,18 +36,18 @@ impl OpParam {
             regarg if regarg.starts_with("V") => {
                 match u8::from_str_radix(&regarg[1..2], 16) {
                     Ok(regvl) => OpParam::Register(regvl),
-                    _ => OpParam::Label(regarg.to_owned())
+                    _ => OpParam::Label(regarg.replace(":", " ").trim().to_owned())
                 }
             },
-            constarg if constarg.starts_with("0x") => {
+            constarg if constarg.starts_with("0X") => {
                 match u16::from_str_radix(&constarg[2..], 16) {
                     Ok(constvl) => OpParam::Variable(constvl), 
-                    _ => OpParam::Label(constarg.to_owned())
+                    _ => OpParam::Label(constarg.replace(":", " ").trim().to_owned())
                 }
             }
             "" => OpParam::Blank,
             other => {
-                OpParam::Label(other.to_owned())
+                OpParam::Label(other.replace(":", " ").trim().to_owned())
             }
         }
     }

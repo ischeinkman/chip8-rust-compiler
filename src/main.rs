@@ -28,9 +28,13 @@ fn main() {
 
 
     let label_map = parse_labels(&source);
+    println!("Labels: {:?}", label_map);
     let mut code : Vec<u8> = Vec::new();
 
     for ln in source.lines() {
+        if !is_instr_line(ln) {
+            continue;
+        }
         let instr = Instruction::parse_args(ln).unwrap().resolve_labels(&label_map);
         let opc = instr.to_opcode();
         code.push((opc & 0xFF00 >> 8) as u8);
