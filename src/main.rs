@@ -37,8 +37,8 @@ fn main() {
         }
         let instr = Instruction::parse_args(ln).unwrap().resolve_labels(&label_map);
         let opc = instr.to_opcode();
-        code.push((opc & 0xFF00 >> 8) as u8);
-        code.push((opc & 0xFF) as u8);
+        code.push(((opc & 0xFF00) >> 8) as u8);
+        code.push( (opc & 0x00FF) as u8);
     }
 
     let mut out_fobj = File::create(out_file).unwrap();

@@ -1,18 +1,17 @@
-#[macro_use]
 use instructions::*;
 
 #[derive(Clone, Debug)]
 pub struct Add {
     acc : OpParam, 
-    toAdd : OpParam
+    to_add : OpParam
 }
 
 impl InstructionOps for Add {
     fn to_opcode(&self) -> u16 {
         match *self {
-            Add{acc : OpParam::Register(dreg), toAdd : OpParam::Variable(vl)} => 0x7000 | ((dreg as u16 & 0xF) << 8) | vl & 0xFF, 
-            Add{acc : OpParam::Register(dreg), toAdd : OpParam::Register(sreg)} => 0x8004 | ((dreg as u16 & 0xF) << 8) | ((sreg as u16 &0xF) << 4),
-            Add{acc : OpParam::RegisterI, toAdd : OpParam::Register(sreg)} => 0xF01E | ((sreg as u16 & 0xF)) << 8,  
+            Add{acc : OpParam::Register(dreg), to_add : OpParam::Variable(vl)} => 0x7000 | ((dreg as u16 & 0xF) << 8) | vl & 0xFF, 
+            Add{acc : OpParam::Register(dreg), to_add : OpParam::Register(sreg)} => 0x8004 | ((dreg as u16 & 0xF) << 8) | ((sreg as u16 &0xF) << 4),
+            Add{acc : OpParam::RegisterI, to_add : OpParam::Register(sreg)} => 0xF01E | ((sreg as u16 & 0xF)) << 8,  
             _ => panic!("Got invalid Add parameter!")
         }
     }
@@ -27,7 +26,7 @@ impl InstructionOps for Add {
             (&OpParam::Register(_), &OpParam::Variable(_)) => { 
                 Ok(Add{
                     acc: parsed_dest, 
-                    toAdd: parsed_source
+                    to_add: parsed_source
                 }) 
             },
             _ => Err(ParseError(format!("Could not parse load args: {}", ln)))

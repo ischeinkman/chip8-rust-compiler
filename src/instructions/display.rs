@@ -1,4 +1,3 @@
-#[macro_use]
 use instructions::*;
 
 #[derive(Clone, Debug)]

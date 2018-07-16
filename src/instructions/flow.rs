@@ -1,4 +1,3 @@
-#[macro_use]
 use instructions::*;
 
 #[derive(Clone, Debug)]
@@ -47,9 +46,9 @@ impl InstructionOps for Jump {
 
 impl InstructionOpsWithLabels for Jump {
     fn resolve_labels(&self, labels : &HashMap<OpParam, OpParam>) -> Jump {
-        let newLeft = labels.get(&self.0).unwrap_or(&self.0);
-        let newRight = labels.get(&self.1).unwrap_or(&self.1);
-        Jump(newLeft.clone(), newRight.clone())
+        let new_left = labels.get(&self.0).unwrap_or(&self.0);
+        let new_right = labels.get(&self.1).unwrap_or(&self.1);
+        Jump(new_left.clone(), new_right.clone())
     }
 }
 
@@ -77,8 +76,8 @@ impl InstructionOps for Call {
 
 impl InstructionOpsWithLabels for Call {
     fn resolve_labels(&self, labels : &HashMap<OpParam, OpParam>) -> Call {
-        let newLeft = labels.get(&self.0).unwrap_or(&self.0);
-        Call(newLeft.clone())
+        let new_left = labels.get(&self.0).unwrap_or(&self.0);
+        Call(new_left.clone())
     }
 }
 
@@ -113,7 +112,7 @@ pub struct SkipIfNotEqual(OpParam, OpParam);
 impl InstructionOps for SkipIfNotEqual {
     fn to_opcode(&self) -> u16 {
         match *self {
-            SkipIfNotEqual(OpParam::Register(dreg), OpParam::Variable(vl)) => 0x5000 | (dreg as u16 & 0xF) << 8 | (vl & 0xFF),
+            SkipIfNotEqual(OpParam::Register(dreg), OpParam::Variable(vl)) => 0x4000 | (dreg as u16 & 0xF) << 8 | (vl & 0xFF),
             SkipIfNotEqual(OpParam::Register(dreg), OpParam::Register(sreg)) => 0x9000 | (dreg as u16 & 0xF) << 8  | (sreg as u16 & 0xF) << 4,
             _ => panic!("Got invalid SkipIfEqual parameter!")
         }
